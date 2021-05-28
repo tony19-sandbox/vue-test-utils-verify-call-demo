@@ -1,12 +1,21 @@
-import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mount } from '@vue/test-utils'
+import MyComponent from '@/components/MyComponent.vue'
 
-describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message'
-    const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg }
+describe('MyComponent.vue', () => {
+  it('calls createDimension on save button-click', async() => {
+    const createDimension = jest.fn(() => Promise.resolve())
+
+    const wrapper = mount(MyComponent, {
+      mocks: {
+        $qiwaApi: {
+          createDimension
+        }
+      }
     })
-    expect(wrapper.text()).toMatch(msg)
+
+    const saveButton = wrapper.find('[data-testid="save"]')
+    await saveButton.trigger('click')
+
+    expect(createDimension).toHaveBeenCalled()
   })
 })
